@@ -11,3 +11,70 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id  String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  username  String?
+  email   String  @unique
+  password  String
+  accounts  Account[]
+  categories  Category[]
+}
+
+model Account {
+  id  String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name  String
+  balance Decimal
+  currency  Currency
+
+  transactions Transaction[]
+
+  user  User  @relation(fields: [userId], references: [id])
+  userId  String  @db.Uuid
+}
+
+model Transaction {
+  id  String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  amout Decimal
+  description String
+  date  DateTime
+  type Transaction_type
+  status Status
+
+  account Account @relation(fields: [accountId], references: [id])
+  accountId String  @db.Uuid
+
+  category  Category?  @relation(fields: [categoryId], references: [id])
+  categoryId String?  @db.Uuid
+}
+
+model Category {
+  id  String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name  String  
+  
+  user  User  @relation(fields: [userId], references: [id])
+  userId  String  @db.Uuid
+
+  transactions Transaction[]
+}
+
+enum Currency {
+  EURO
+  DOLLAR
+  LIVRE_STERLING
+  ROUBLE
+  WON
+  YEN
+  YUAN
+}
+
+enum Status {
+  DONE 
+  PENDING
+}
+
+enum Transaction_type {
+  INCOME
+  EXPENSE
+  INTEREST
+}
