@@ -3,6 +3,9 @@ import { } from "../../services/tokenService";
 import type { RegisterDto, LoginDto } from "./auth.schemas"
 import { TokenService } from "../../services/tokenService"
 import { PasswordService } from "../../services/passwordService"; 
+import { InvalidCredentialsError } from "../../lib/errors/invalidCredentialsError";
+import { ConflictError } from "../../lib/errors/conflictError";
+import { ErrorCodes } from "../../lib/errors/errorCodes";
 
 export class AuthService {
 
@@ -22,7 +25,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new Error("email already exist");
+      throw new ConflictError(ErrorCodes.USER_EMAIL_ALREADY_EXISTS, "Email already exists");
     }
 
     // Hash password
@@ -62,15 +65,13 @@ export class AuthService {
     });
 
     if (!user) {
-      return new Error
-      //throw new InvalidCredentialsError();
+      throw new InvalidCredentialsError();
     }
 
     const valid = await this.passwordService.verify(dto.password, user.password);
 
     if (!valid) {
-      return new Error
-      // throw new InvalidCredentialsError();
+      throw new InvalidCredentialsError();
     }
 
     const token = this.tokenService.createAccessToken({ 

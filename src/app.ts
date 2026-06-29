@@ -1,5 +1,6 @@
 import Fastify from "fastify";
 
+import { errorHandler } from "./lib/errorHandler.js";
 import prismaPlugin from "./plugins/prisma.js";
 import swaggerPlugin from "./plugins/swagger.js";
 import { TokenService } from "./services/tokenService.js";
@@ -19,6 +20,8 @@ export async function buildApp() {
   const app = Fastify({
     logger: true,
   });
+
+  app.setErrorHandler(errorHandler);
 
   // Plugins
   await app.register(prismaPlugin);
