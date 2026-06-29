@@ -18,14 +18,27 @@ export class AuthService {
   async register(dto: RegisterDto) {
 
     // Check if email is already used
-    const existingUser = await this.prisma.user.findUnique({
+    const existingUserEmail = await this.prisma.user.findUnique({
       where: {
         email: dto.email,
       }
     });
 
-    if (existingUser) {
+    if (existingUserEmail) {
       throw new ConflictError(ErrorCodes.USER_EMAIL_ALREADY_EXISTS, "Email already exists");
+    }
+
+    // Check if username is already used if username field isn't empty
+    if (dto.username) {
+      const existingUserUsername = await this.prisma.user.findUnique({
+        where: {
+          username: dto.username,
+        }
+      });
+
+      if (existingUserUsername) {
+        throw new ConflictError(ErrorCodes.USER_USERNAME_ALREADY_EXISTS, "Username already exists");
+      }
     }
 
     // Hash password
