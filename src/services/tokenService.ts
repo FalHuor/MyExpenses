@@ -1,23 +1,28 @@
-import jwt from "jsonwebtoken";
 import type { TokenServiceConfig } from "./tokenService.types";
-
-export type AccessTokenPayload = {
-  id: string;
-  email: string;
-};
+import type { JwtPayload } from "../types/jwt";
+import { InvalidTokenError } from "../lib/errors/invalidTokenError";
+import jwt from "jsonwebtoken";
 
 export class TokenService {
   constructor (
     private config: TokenServiceConfig
   ){}
 
-  createAccessToken(payload: object) {
+  signAccessToken(payload: JwtPayload): string {
     return jwt.sign(payload, this.config.secret, {
       expiresIn: this.config.expiresIn ?? "1h",
     });
   }
 
-  verify (token: string) {
-    return jwt.verify(token, this.config.secret);
+  verifyAccessToken (token: string): JwtPayload {
+    try {
+      const payload = jwt.verify(token, this.config.secret); 
+
+      return payload as JwtPayload;
+    }
+    catch {
+      throw new InvalidTokenError();
+    }
+
   }
 }

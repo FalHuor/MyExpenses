@@ -87,11 +87,26 @@ export class AuthService {
       throw new InvalidCredentialsError();
     }
 
-    const token = this.tokenService.createAccessToken({ 
+    const token = this.tokenService.signAccessToken({ 
       id: user.id, 
       email: user.email 
     });
 
     return token;
+  }
+
+  async me(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      }, 
+      select: {
+        id: true,
+        username: true,
+        email: true
+      }
+    })
+
+    return user;
   }
 };

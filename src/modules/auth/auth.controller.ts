@@ -22,6 +22,17 @@ export class AuthController {
   ) => {
     const token = await this.authService.login(request.body);
 
-    return reply.code(200).send(token);
+    return reply.code(200).send({ "accessToken": token });
+  }
+
+  me = async (
+    request: FastifyRequest,
+    reply: FastifyReply
+  ) => {
+    const user = await this.authService.me(
+      request.user.id
+    );
+
+    return reply.code(200).send(user);
   }
 }

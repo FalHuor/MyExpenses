@@ -8,6 +8,7 @@ import { PasswordService } from "./services/passwordService.js";
 import "dotenv/config";
 
 import authModule from "./modules/auth/index.js"
+import { createAuthPlugin } from "./plugins/auth.js";
 
 export const tokenService = new TokenService({
   secret: process.env.JWT_SECRET!,
@@ -26,6 +27,7 @@ export async function buildApp() {
   // Plugins
   await app.register(prismaPlugin);
   await app.register(swaggerPlugin);
+  await app.register(createAuthPlugin(tokenService))
 
   // Routes
   app.get("/health", async () => {

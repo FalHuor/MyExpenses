@@ -3,8 +3,7 @@ import { fastify, type FastifyPluginAsync } from "fastify";
 import { prisma } from "../../lib/prisma.js";
 import { AuthController } from "./auth.controller.js";
 import { AuthService } from "./auth.service.js";
-import { tokenService } from "../../app.js"; 
-import { passwordService } from "../../app.js";
+import { passwordService, tokenService } from "../../app.js";
 
 const authRoutes: FastifyPluginAsync = async (fastify) => {
   const authService = new AuthService(prisma, tokenService, passwordService);
@@ -12,6 +11,7 @@ const authRoutes: FastifyPluginAsync = async (fastify) => {
 
   fastify.post("/register", authController.register);
   fastify.post("/login", authController.login);
+  fastify.get("/me", { preHandler: [fastify.authenticate] }, authController.me );
 }
 
 export default authRoutes;
