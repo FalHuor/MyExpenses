@@ -4,7 +4,7 @@ import type {
   FastifyRequest,
 } from "fastify";
 
-import { AppError } from "./errors/appError";
+import { AppError } from "./appError";
 
 export function errorHandler(
   error: FastifyError | AppError,

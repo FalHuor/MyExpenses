@@ -1,6 +1,6 @@
 import type { TokenServiceConfig } from "./tokenService.types";
 import type { JwtPayload } from "../types/jwt";
-import { InvalidTokenError } from "../lib/errors/invalidTokenError";
+import { InvalidTokenError } from "../core/errors/invalidTokenError";
 import jwt from "jsonwebtoken";
 
 export class TokenService {

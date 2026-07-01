@@ -1,8 +1,8 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import fp from "fastify-plugin";
 import { TokenService } from "../services/tokenService";
-import { UnauthorizedError } from "../lib/errors/unauthorizedError"
-import { logger } from "../lib/logger";
+import { UnauthorizedError } from "../core/errors/unauthorizedError"
+import { logger } from "../core/logger/logger";
 
 export function createAuthPlugin(
   tokenService: TokenService

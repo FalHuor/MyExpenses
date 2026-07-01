@@ -3,10 +3,10 @@ import { } from "../../services/tokenService";
 import type { RegisterDto, LoginDto } from "./auth.schemas"
 import { TokenService } from "../../services/tokenService"
 import { PasswordService } from "../../services/passwordService"; 
-import { InvalidCredentialsError } from "../../lib/errors/invalidCredentialsError";
-import { ConflictError } from "../../lib/errors/conflictError";
-import { ErrorCodes } from "../../lib/errors/errorCodes";
-import { logger } from "../../lib/logger";
+import { InvalidCredentialsError } from "../../core/errors/invalidCredentialsError";
+import { ConflictError } from "../../core/errors/conflictError";
+import { ErrorCodes } from "../../core/errors/errorCodes";
+import { logger } from "../../core/logger/logger";
 
 export class AuthService {
 

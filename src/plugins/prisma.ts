@@ -1,5 +1,5 @@
 import fp from "fastify-plugin";
-import { prisma } from "../lib/prisma"
+import { prisma } from "../core/database/prisma"
 
 
 export default fp(async (fastify) => {
