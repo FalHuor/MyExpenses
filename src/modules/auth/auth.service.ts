@@ -6,6 +6,7 @@ import { PasswordService } from "../../services/passwordService";
 import { InvalidCredentialsError } from "../../lib/errors/invalidCredentialsError";
 import { ConflictError } from "../../lib/errors/conflictError";
 import { ErrorCodes } from "../../lib/errors/errorCodes";
+import { logger } from "../../lib/logger";
 
 export class AuthService {
 
@@ -58,6 +59,11 @@ export class AuthService {
       },
     });
 
+    logger.info({
+      userId: user.id,
+      email: user.email
+    }, "User registerd")
+
     return user;
   }
 
@@ -91,6 +97,11 @@ export class AuthService {
       id: user.id, 
       email: user.email 
     });
+
+    logger.info({
+      userId: user.id,
+      email: user.email
+    }, "User logged in")
 
     return token;
   }

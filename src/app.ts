@@ -1,19 +1,16 @@
 import Fastify from "fastify";
+import "dotenv/config";
 
 import { errorHandler } from "./lib/errorHandler.js";
 import prismaPlugin from "./plugins/prisma.js";
 import swaggerPlugin from "./plugins/swagger.js";
 import { TokenService } from "./services/tokenService.js";
 import { PasswordService } from "./services/passwordService.js";
-import "dotenv/config";
-
 import authModule from "./modules/auth/index.js"
 import { createAuthPlugin } from "./plugins/auth.js";
+import { config } from "./config/index.js";
 
-export const tokenService = new TokenService({
-  secret: process.env.JWT_SECRET!,
-  expiresIn: "1h",
-});
+export const tokenService = new TokenService(config.jwt);
 
 export const passwordService = new PasswordService();
 

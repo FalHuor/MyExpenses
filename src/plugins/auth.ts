@@ -2,6 +2,7 @@ import type { FastifyRequest, FastifyReply } from "fastify";
 import fp from "fastify-plugin";
 import { TokenService } from "../services/tokenService";
 import { UnauthorizedError } from "../lib/errors/unauthorizedError"
+import { logger } from "../lib/logger";
 
 export function createAuthPlugin(
   tokenService: TokenService
@@ -22,14 +23,10 @@ export function createAuthPlugin(
   });
 
   function extractBearerToken(authorization?: string): string {
-    if (!authorization) {
-        throw new UnauthorizedError();
-      }
+    if (!authorization || !authorization.startsWith("Bearer ")) {
+      throw new UnauthorizedError();
+    }
 
-      if (!authorization.startsWith("Bearer ")) {
-        throw new UnauthorizedError();
-      }
-
-      return authorization.replace("Bearer ", "");
+    return authorization.replace("Bearer ", "");
   }
 }

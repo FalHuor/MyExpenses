@@ -2,7 +2,6 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 
 import type { LoginDto, RegisterDto } from "./auth.schemas";
 import { AuthService } from "./auth.service";
-import { request } from "node:http";
 
 export class AuthController {
   constructor(private authService: AuthService) {}
