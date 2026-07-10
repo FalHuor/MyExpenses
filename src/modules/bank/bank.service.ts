@@ -22,7 +22,8 @@ export class BankService {
 
     this.logger.info({
       userId: userId,
-      bankId: bank.id
+      bankId: bank.id,
+      name: name,
     }, "Bank created");
 
     return bank;
@@ -96,7 +97,7 @@ export class BankService {
         ownerUserId: bank.userId,
         bankId: bank.id,
         name: bank.name,
-      }, "User attempted to access another user's bank");
+      }, "forbidden - User attempted to access another user's bank");
 
       throw new ForbiddenError(ErrorCodes.BANK_ACCESS_FORBIDDEN, "Bank access forbidden");
     }
@@ -106,8 +107,19 @@ export class BankService {
     const bank = await this.bankRepository.findById(bankId);
 
     if (!bank) {
+      this.logger.warn({
+        bankId: bankId
+      }, "Bank not found");
+
       throw new NotFoundError(ErrorCodes.BANK_NOT_FOUND, "Bank not found");
     }
+
+    this.logger.info({
+      userId: bank.userId,
+      bankId: bank.id,
+      name: bank.name,
+    }, "get bank");
+
 
     this.ensureUserOwnsBank(bank, userId);
     return bank;
