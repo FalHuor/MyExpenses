@@ -1,15 +1,20 @@
-import Fastify from "fastify";
+import "dotenv/config";
+import { buildApp } from "./app";
 
-const app = Fastify({
-  logger: true,
-});
+const start = async () => {
+    const app = await buildApp();
 
-app.get("/health", async () => {
-  return {
-    status: "ok",
-  };
-});
+    try {
+        await app.listen({
+            port: 3000,
+            host: "0.0.0.0",
+        });
 
-app.listen({
-  port: 3000,
-});
+        app.log.info("Server started");
+    } catch (err) {
+        app.log.error(err);
+        process.exit(1);
+    };
+}
+
+start();
