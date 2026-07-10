@@ -44,7 +44,7 @@ export class BankService {
     }, "Updating bank");
 
     await this.getOwnedBank(userId, bankId);
-    await this.ensureBankNameIsAvailable(userId, name);
+    await this.ensureBankNameIsAvailable(userId, name, bankId);
 
     const bank = await this.bankRepository.update(bankId, name);
     this.logger.info({
@@ -75,10 +75,10 @@ export class BankService {
   }
 
 
-  private async ensureBankNameIsAvailable(userId: string, name: string) {
+  private async ensureBankNameIsAvailable(userId: string, name: string, excluededBankId?: string) {
     const existing = await this.bankRepository.findByName(userId, name);
 
-    if (existing) {
+    if (existing && existing.id !== excluededBankId) {
       this.logger.warn({
         userId: existing.userId,
         bankId: existing.id,

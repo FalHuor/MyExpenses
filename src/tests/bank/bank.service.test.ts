@@ -9,8 +9,9 @@ import { ForbiddenError } from "../../core/errors/forbiddenError";
 let repository: ReturnType<typeof bankRepositoryMock>;
 let logger: ReturnType<typeof createLoggerMock>;
 let service: BankService;
+const date = new Date();
 
-describe("BankService.create", () => {
+describe("BankService", () => {
 
   beforeEach(() => {
     repository = bankRepositoryMock();
@@ -18,389 +19,463 @@ describe("BankService.create", () => {
     service = new BankService(repository, logger);
   })
 
-  test("should create a bank", async () => {
-    // Arrange
-    repository.findByName.mockResolvedValue(null);
-    repository.create.mockResolvedValue({
-      name: "Revolut",
-      id: "bank-id",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: "user-id",
+  describe("create", () => {
+
+    test("should create a bank", async () => {
+      // Arrange
+      repository.findByName.mockResolvedValue(null);
+      repository.create.mockResolvedValue({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
+
+      // Act
+      const result = await service.create(
+        "user-id",
+        "Revolut",
+      );
+
+      // Assert
+      expect(repository.findByName)
+        .toHaveBeenCalledWith(
+          "user-id",
+          "Revolut",
+        );
+
+      expect(repository.create)
+        .toHaveBeenCalledWith(
+          "user-id",
+          "Revolut",
+        );
+    
+      expect(result).toEqual({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
     });
 
-    // Act
-    const result = await service.create(
-      "user-id",
-      "Revolut",
-    );
+    test("should throw ConflictError when bank name already exists", async () => {
+      // Arrange
+      repository.findByName.mockResolvedValue({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      }); 
 
-    // Assert
-    expect(repository.findByName)
-      .toHaveBeenCalledWith(
-        "user-id",
-        "Revolut",
-      );
+      // Act & Assert
+      await expect(
+        service.create(
+          "user-id",
+          "Revolut",
+        ),
+      ).rejects.toThrow(ConflictError);
 
-    expect(repository.create)
-      .toHaveBeenCalledWith(
-        "user-id",
-        "Revolut",
-      );
-    
-    expect(result.name)
-      .toBe("Revolut");
+      expect(repository.create).not.toHaveBeenCalled();
+
+    })
   });
 
-  test("should throw ConflictError when bank name already exists", async () => {
-    // Arrange
-    repository.findByName.mockResolvedValue({
-      name: "Revolut",
-      id: "bank-id",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: "user-id",
-    }); 
+  describe("getAll", () => {
 
-    // Act & Assert
-    await expect(
-      service.create(
+    test("should return all bank owned by user", async () => {
+      // Arrange
+      repository.findAllByUser.mockResolvedValue([
+        {
+          name: "Revolut",
+          id: "bank-id-1",
+          createdAt: date,
+          updatedAt: date,
+          userId: "user-id",
+        }, {
+          name: "Credit Agricole",
+          id: "bank-id-2",
+          createdAt: date,
+          updatedAt: date,
+          userId: "user-id",
+        }, {
+          name: "Credit Mutuel",
+          id: "bank-id-3",
+          createdAt: date,
+          updatedAt: date,
+          userId: "user-id",
+        }
+      ]);
+
+      // Act
+      const result = await service.getAll(
         "user-id",
-        "Revolut",
-      ),
-    ).rejects.toThrow(ConflictError);
+      );
 
-    expect(repository.create).not.toHaveBeenCalled();
-
-  })
-})
-
-describe("BankService.getAll", () => {
-
-  beforeEach(() => {
-    repository = bankRepositoryMock();
-    logger = createLoggerMock();
-    service = new BankService(repository, logger);
+      // Assert
+      expect(repository.findAllByUser)
+        .toHaveBeenCalledWith(
+          "user-id",
+        );
+      
+      expect(result).toEqual([
+        {
+          name: "Revolut",
+          id: "bank-id-1",
+          createdAt: date,
+          updatedAt: date,
+          userId: "user-id",
+        }, {
+          name: "Credit Agricole",
+          id: "bank-id-2",
+          createdAt: date,
+          updatedAt: date,
+          userId: "user-id",
+        }, {
+          name: "Credit Mutuel",
+          id: "bank-id-3",
+          createdAt: date,
+          updatedAt: date,
+          userId: "user-id",
+        }
+      ]);
+    });
   });
 
-  test("should return all bank owned by user", async () => {
-    // Arrange
-    repository.findAllByUser.mockResolvedValue([
-      {
+
+  describe("getById", () => {
+
+    test("should return a bank by Id", async () => {
+      // Arrange
+      repository.findById.mockResolvedValue({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
+
+      // Act
+      const result = await service.getById(
+        "user-id",
+        "bank-id",
+      );
+
+      
+      // Assert
+      expect(repository.findById)
+        .toHaveBeenCalledWith(
+          "bank-id",
+        );
+      
+      expect(result).toEqual({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
+    });
+
+    test("should throw NotFoundError when bankId doesn't exist", async () => {
+      // Arrange
+      repository.findById.mockResolvedValue(null);
+
+      // Act & Assert
+      await expect(
+        service.getById(
+          "user-id",
+          "Revolut",
+        ),
+      ).rejects.toThrow(NotFoundError);
+    });
+
+    test("should throw ForbiddenError when owner is another user", async () => {
+      // Arrange
+      repository.findById.mockResolvedValue({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id-2",
+      });
+
+      // Act & Assert
+      await expect(
+        service.getById(
+          "user-id-1",
+          "bank-id",
+        ),
+      ).rejects.toThrow(ForbiddenError);
+    });
+  });
+
+
+  describe("update", () => {
+
+    test("should update a bank", async () => {
+      // Arrange
+      repository.findById.mockResolvedValue({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
+
+      repository.update.mockResolvedValue({
+        name: "Credit Mutuel",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
+
+      // Act
+      const result = await service.update(
+        "user-id",
+        "bank-id",
+        "Credit Mutuel",
+      );
+
+      // Assert
+      expect(repository.findById)
+        .toHaveBeenCalledWith(
+          "bank-id"
+        );
+
+      expect(repository.findByName)
+        .toHaveBeenCalledWith(
+          "user-id",
+          "Credit Mutuel",
+        );
+
+      expect(repository.update)
+        .toHaveBeenCalledWith(
+          "bank-id",
+          "Credit Mutuel",
+        );
+      
+      expect(result).toEqual({
+        name: "Credit Mutuel",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
+    });
+
+    test("should throw ConflictError when bank name already exists", async () => {
+      // Arrange
+      repository.findById.mockResolvedValue({
         name: "Revolut",
         id: "bank-id-1",
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: date,
+        updatedAt: date,
         userId: "user-id",
-      }, {
-        name: "Credit Agricole",
+      });
+
+      repository.findByName.mockResolvedValue({
+        name: "CIC",
         id: "bank-id-2",
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: date,
+        updatedAt: date,
         userId: "user-id",
-      }, {
-        name: "Credit Mutuel",
-        id: "bank-id-3",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        userId: "user-id",
-      }
-    ]);
+      });
 
-    // Act
-    const result = await service.getAll(
-      "user-id",
-    );
+      // Act & Assert
+      await expect(
+        service.update(
+          "user-id",
+          "bank-id-1",
+          "CIC",
+        ),
+      ).rejects.toThrow(ConflictError);
 
-    
-    // Assert
-    expect(repository.findAllByUser)
-      .toHaveBeenCalledWith(
-        "user-id",
-      );
-    
-    expect(result.length)
-      .toBe(3);
-  });
-
-});
-
-describe("BankService.getById", () => {
-
-  beforeEach(() => {
-    repository = bankRepositoryMock();
-    logger = createLoggerMock();
-    service = new BankService(repository, logger);
-  });
-
-  test("should return a bank by Id", async () => {
-    // Arrange
-    repository.findById.mockResolvedValue({
-      name: "Revolut",
-      id: "bank-id",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: "user-id",
+      expect(repository.update).not.toHaveBeenCalled();
     });
 
-    // Act
-    const result = await service.getById(
-      "user-id",
-      "bank-id",
-    );
+    test("should throw ForbiddenError when owner is another user", async () => {
+      // Arrange
+      repository.findById.mockResolvedValue({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id-2",
+      });
 
-    
-    // Assert
-    expect(repository.findById)
-      .toHaveBeenCalledWith(
-        "bank-id",
-      );
-    
-    expect(result.name)
-      .toBe("Revolut");
+      // Act & Assert
+      await expect(
+        service.update(
+          "user-id-1",
+          "bank-id",
+          "CIC"
+        ),
+      ).rejects.toThrow(ForbiddenError);
 
-    expect(result.userId)
-      .toBe("user-id");
-  });
+      expect(repository.update).not.toHaveBeenCalled();
+    });
 
-  test("should throw NotFoundError when bankId doesn't exist", async () => {
-    // Arrange
-    repository.findById.mockResolvedValue(null);
+    test("should throw NotFoundError when bankId doesn't exist", async () => {
+      // Arrange
+      repository.findById.mockResolvedValue(null);
 
-    // Act & Assert
-    await expect(
-      service.getById(
+      // Act & Assert
+      await expect(
+        service.update(
+          "user-id",
+          "bank-id",
+          "revolut"
+        ),
+      ).rejects.toThrow(NotFoundError);
+
+      expect(repository.update).not.toHaveBeenCalled();
+    });
+
+    test("should update bank with unchanged name", async () => {
+      // Arrange
+      repository.findById.mockResolvedValue({
+        name: "revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
+
+      repository.findByName.mockResolvedValue({
+        name: "revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
+
+      repository.update.mockResolvedValue({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
+
+      // Act
+      const result = await service.update(
         "user-id",
+        "bank-id",
         "Revolut",
-      ),
-    ).rejects.toThrow(NotFoundError);
-  });
-
-  test("should throw ForbiddenError when owner is another user", async () => {
-    // Arrange
-    repository.findById.mockResolvedValue({
-      name: "Revolut",
-      id: "bank-id",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: "user-id-2",
-    });
-
-    // Act & Assert
-    await expect(
-      service.getById(
-        "user-id-1",
-        "bank-id",
-      ),
-    ).rejects.toThrow(ForbiddenError);
-  });
-});
-
-describe("BankService.update", () => {
-
-  beforeEach(() => {
-    repository = bankRepositoryMock();
-    logger = createLoggerMock();
-    service = new BankService(repository, logger);
-  });
-
-  test("should update a bank", async () => {
-    // Arrange
-    repository.findById.mockResolvedValue({
-      name: "Revolut",
-      id: "bank-id",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: "user-id",
-    });
-
-    repository.update.mockResolvedValue({
-      name: "Credit Mutuel",
-      id: "bank-id",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: "user-id",
-    });
-
-    // Act
-    const result = await service.update(
-      "user-id",
-      "bank-id",
-      "Credit Mutuel",
-    );
-
-    // Assert
-    expect(repository.findById)
-      .toHaveBeenCalledWith(
-        "bank-id"
       );
 
-    expect(repository.findByName)
-      .toHaveBeenCalledWith(
-        "user-id",
-        "Credit Mutuel",
-      );
+      // Assert
+      expect(repository.findById)
+        .toHaveBeenCalledWith(
+          "bank-id"
+        );
 
-    expect(repository.update)
-      .toHaveBeenCalledWith(
-        "bank-id",
-        "Credit Mutuel",
-      );
-    
-    expect(result.name)
-      .toBe("Credit Mutuel");
+      expect(repository.findByName)
+        .toHaveBeenCalledWith(
+          "user-id",
+          "Revolut",
+        );
+
+      expect(repository.update)
+        .toHaveBeenCalledWith(
+          "bank-id",
+          "Revolut",
+        );
+      
+      expect(result).toEqual({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
+    });
   });
 
-  test("should throw ConflictError when bank name already exists", async () => {
-    // Arrange
-    repository.findById.mockResolvedValue({
-      name: "Revolut",
-      id: "bank-id-1",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: "user-id",
-    });
+  describe("delete", () => {
 
-    repository.findByName.mockResolvedValue({
-      name: "CIC",
-      id: "bank-id-2",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: "user-id",
-    });
+    test("should delete a bank", async () => {
+      // Arrange
+      repository.findById.mockResolvedValue({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
 
-    // Act & Assert
-    await expect(
-      service.update(
-        "user-id",
-        "bank-id-1",
-        "CIC",
-      ),
-    ).rejects.toThrow(ConflictError);
+      repository.delete.mockResolvedValue({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
 
-    expect(repository.update).not.toHaveBeenCalled();
-  });
-
-  test("should throw ForbiddenError when owner is another user", async () => {
-    // Arrange
-    repository.findById.mockResolvedValue({
-      name: "Revolut",
-      id: "bank-id",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: "user-id-2",
-    });
-
-    // Act & Assert
-    await expect(
-      service.update(
-        "user-id-1",
-        "bank-id",
-        "CIC"
-      ),
-    ).rejects.toThrow(ForbiddenError);
-
-    expect(repository.update).not.toHaveBeenCalled();
-  });
-
-  test("should throw NotFoundError when bankId doesn't exist", async () => {
-    // Arrange
-    repository.findById.mockResolvedValue(null);
-
-    // Act & Assert
-    await expect(
-      service.update(
+      // Act
+      const result = await service.delete(
         "user-id",
         "bank-id",
-        "revolut"
-      ),
-    ).rejects.toThrow(NotFoundError);
-
-    expect(repository.update).not.toHaveBeenCalled();
-  });
-});
-
-describe("BankService.delete", () => {
-
-  beforeEach(() => {
-    repository = bankRepositoryMock();
-    logger = createLoggerMock();
-    service = new BankService(repository, logger);
-  });
-
-  test("should delete a bank", async () => {
-    // Arrange
-    repository.findById.mockResolvedValue({
-      name: "Revolut",
-      id: "bank-id",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: "user-id",
-    });
-
-    repository.delete.mockResolvedValue({
-      name: "Revolut",
-      id: "bank-id",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: "user-id",
-    });
-
-    // Act
-    const result = await service.delete(
-      "user-id",
-      "bank-id",
-    );
-
-    // Assert
-    expect(repository.findById)
-      .toHaveBeenCalledWith(
-        "bank-id"
       );
 
-    expect(repository.delete)
-      .toHaveBeenCalledWith(
-        "bank-id",
-      );
-    
-    expect(result.name)
-      .toBe("Revolut");
-  });
+      // Assert
+      expect(repository.findById)
+        .toHaveBeenCalledWith(
+          "bank-id"
+        );
 
-  test("should throw NotFoundError when bankId doesn't exist", async () => {
-    // Arrange
-    repository.findById.mockResolvedValue(null);
-
-    // Act & Assert
-    await expect(
-      service.delete(
-        "user-id",
-        "bank-id",
-      ),
-    ).rejects.toThrow(NotFoundError);
-
-    expect(repository.delete).not.toHaveBeenCalled();
-  });
-
-  test("should throw ForbiddenError when owner is another user", async () => {
-    // Arrange
-    repository.findById.mockResolvedValue({
-      name: "Revolut",
-      id: "bank-id",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      userId: "user-id-2",
+      expect(repository.delete)
+        .toHaveBeenCalledWith(
+          "bank-id",
+        );
+      
+      expect(result).toEqual({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id",
+      });
     });
 
-    // Act & Assert
-    await expect(
-      service.delete(
-        "user-id-1",
-        "bank-id",
-      ),
-    ).rejects.toThrow(ForbiddenError);
+    test("should throw NotFoundError when bankId doesn't exist", async () => {
+      // Arrange
+      repository.findById.mockResolvedValue(null);
 
-    expect(repository.delete).not.toHaveBeenCalled();
+      // Act & Assert
+      await expect(
+        service.delete(
+          "user-id",
+          "bank-id",
+        ),
+      ).rejects.toThrow(NotFoundError);
+
+      expect(repository.delete).not.toHaveBeenCalled();
+    });
+
+    test("should throw ForbiddenError when owner is another user", async () => {
+      // Arrange
+      repository.findById.mockResolvedValue({
+        name: "Revolut",
+        id: "bank-id",
+        createdAt: date,
+        updatedAt: date,
+        userId: "user-id-2",
+      });
+
+      // Act & Assert
+      await expect(
+        service.delete(
+          "user-id-1",
+          "bank-id",
+        ),
+      ).rejects.toThrow(ForbiddenError);
+
+      expect(repository.delete).not.toHaveBeenCalled();
+    });
   });
-
 });
