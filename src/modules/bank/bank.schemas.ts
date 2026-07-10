@@ -1,23 +1,17 @@
 import * as z from "zod"; 
 
-export const CreateSchema = z.object({
-  name: z.string(),
+export const CreateBankSchema = z.object({
+  name: z.string().trim(),
 });
 
-export const GetOneSchema = z.object({
-  id: z.string(),
+export const UpdateBankSchema = z.object({
+  name: z.string().trim(),
 });
 
-export const DeleteSchema = z.object({
-  id: z.string(),
+export const BankParamsSchema = z.object({
+  bankId: z.string(),
 });
 
-export const UpdateSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-})
-
-export type BankCreateDto = z.infer<typeof CreateSchema>;
-export type BankUpdateDto = z.infer<typeof UpdateSchema>;
-export type BankGetOneDto = z.infer<typeof GetOneSchema>;
-export type BankDeleteDto = z.infer<typeof DeleteSchema>;
+export type BankCreateDto = z.infer<typeof CreateBankSchema>;
+export type BankUpdateDto = z.infer<typeof UpdateBankSchema>;
+export type BankParamsDto  = z.infer<typeof BankParamsSchema>;

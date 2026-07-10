@@ -1,11 +1,9 @@
-import type { Prisma, PrismaClient } from "../../../generated/prisma/client";
+import type { Bank, Prisma, PrismaClient } from "../../../generated/prisma/client";
 
-export class BankRepository {
+export class PrismaBankRepository implements BankRepository {
   constructor (
     private prisma: PrismaClient
-  ) {
-
-  };
+  ) {};
 
   async create(userId: string, name: string) {
     return await this.prisma.bank.create({
@@ -46,11 +44,14 @@ export class BankRepository {
     });
   };
 
-  async findByName(userId: string, name: string, excluededBankId?: string) {
+  async findByName(userId: string, name: string) {
     return await this.prisma.bank.findFirst({
       where: {
         userId,
-        name,
+        name: {
+          equals: name,
+          mode: "insensitive",
+        },
       },
       select: bankSelect,
     })
@@ -64,6 +65,15 @@ export class BankRepository {
       select: bankSelect,
     });
   };
+}
+
+export interface BankRepository {
+  create(userId: string, name: string): Promise<Bank>;
+  update(id: string, name: string): Promise<Bank>;
+  findById(bankId: string): Promise<Bank | null>;
+  findByName(userId: string, name: string): Promise<Bank | null>;
+  findAllByUser(userId: string): Promise<Bank[]>;
+  delete(bankId: string): Promise<Bank>;
 }
 
 export const bankSelect = {

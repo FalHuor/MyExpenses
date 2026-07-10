@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import type { BankCreateDto, BankDeleteDto, BankGetOneDto, BankUpdateDto } from "./bank.schemas";
+import type { BankCreateDto, BankParamsDto, BankUpdateDto } from "./bank.schemas";
 import { BankService } from "./bank.service";
 
 
@@ -24,11 +24,11 @@ export class BankController {
     request: FastifyRequest,
     reply: FastifyReply
   ) => {
-    const { id } = request.body as BankGetOneDto;
+    const { bankId } = request.params as BankParamsDto;
 
     const bank = await this.bankService.getById(
       request.user.id,
-      id
+      bankId
     )
 
     return reply.code(200).send(bank);
@@ -49,11 +49,10 @@ export class BankController {
     request: FastifyRequest,
     reply: FastifyReply
   ) => {
-    const { id } = request.body as BankDeleteDto;
-
+    const { bankId } = request.params as BankParamsDto;
     const bank = await this.bankService.delete(
       request.user.id,
-      id
+      bankId
     )
 
     return reply.code(200).send(bank);
@@ -63,11 +62,12 @@ export class BankController {
     request: FastifyRequest,
     reply: FastifyReply
   ) => {
-    const { id, name } = request.body as BankUpdateDto;
+    const { bankId } = request.params as BankParamsDto;
+    const { name } = request.body as BankUpdateDto;
 
     const bank = await this.bankService.update(
       request.user.id,
-      id,
+      bankId,
       name
     )
 

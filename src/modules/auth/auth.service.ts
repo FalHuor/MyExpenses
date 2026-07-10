@@ -6,14 +6,15 @@ import { PasswordService } from "../../services/passwordService";
 import { InvalidCredentialsError } from "../../core/errors/invalidCredentialsError";
 import { ConflictError } from "../../core/errors/conflictError";
 import { ErrorCodes } from "../../core/errors/errorCodes";
-import { logger } from "../../core/logger/logger";
+import type { AppLogger } from "../../core/logger/logger.types";
 
 export class AuthService {
 
   constructor(
     private prisma: PrismaClient,
     private tokenService: TokenService,
-    private passwordService: PasswordService
+    private passwordService: PasswordService,
+    private logger: AppLogger
   ) {}
 
   async register(dto: RegisterDto) {
@@ -59,7 +60,7 @@ export class AuthService {
       },
     });
 
-    logger.info({
+    this.logger.info({
       userId: user.id,
       email: user.email
     }, "User registerd")
@@ -98,7 +99,7 @@ export class AuthService {
       email: user.email 
     });
 
-    logger.info({
+    this.logger.info({
       userId: user.id,
       email: user.email
     }, "User logged in")

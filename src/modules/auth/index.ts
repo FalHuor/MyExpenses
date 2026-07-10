@@ -9,6 +9,7 @@ export function createAuthModule(dependencies: Dependencies) {
         dependencies.prisma,
         dependencies.tokenService,
         dependencies.passwordService,
+        dependencies.logger.child({ module: "auth" }),
     );
 
     const authController = new AuthController(authService);

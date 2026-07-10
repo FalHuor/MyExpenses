@@ -6,9 +6,9 @@ export function createBankRoutes(
 ) {
   return async function (fastify: FastifyInstance) {
     fastify.post("/", { preHandler: [fastify.authenticate] }, controller.create);
-    fastify.put("/:id", { preHandler: [fastify.authenticate] }, controller.update);
-    fastify.get("/:id", { preHandler: [fastify.authenticate] }, controller.getOne);
+    fastify.patch("/:bankId", { preHandler: [fastify.authenticate] }, controller.update);
+    fastify.get("/:bankId", { preHandler: [fastify.authenticate] }, controller.getOne);
     fastify.get("/", { preHandler: [fastify.authenticate] }, controller.getMany);
-    fastify.delete("/:id", { preHandler: [fastify.authenticate] }, controller.delete);
+    fastify.delete("/:bankId", { preHandler: [fastify.authenticate] }, controller.delete);
   }
 }

@@ -4,26 +4,28 @@ import type { BankRepository } from "./bank.repository";
 import { NotFoundError } from "../../core/errors/notFoundError";
 import { ForbiddenError } from "../../core/errors/forbiddenError";
 import type { Bank } from "../../../generated/prisma/client";
-import { logger } from "../../core/logger/logger";
+import type { AppLogger } from "../../core/logger/logger.types";
 
 export class BankService {
   constructor (
-    private bankRepository: BankRepository
+    private bankRepository: BankRepository, 
+    private logger: AppLogger,
   ) {}
 
   async create(userId: string, name: string) {
-    logger.info({
+    this.logger.info({
       userId: userId,
       name: name
     }, "Creating new bank");
-
     await this.ensureBankNameIsAvailable(userId, name);
     const bank = await this.bankRepository.create(userId, name);
 
-    logger.info({
+    this.logger.info({
       userId: userId,
       bankId: bank.id
     }, "Bank created");
+
+    return bank;
   }
 
   async getAll(userId: string) {
@@ -35,25 +37,27 @@ export class BankService {
   }
 
   async update(userId: string, bankId: string, name: string) {
-    logger.info({
+    this.logger.info({
       userId: userId,
       bankId: bankId,
       newName: name,
     }, "Updating bank");
 
     await this.getOwnedBank(userId, bankId);
-    await this.ensureBankNameIsAvailable(userId, name, bankId);
+    await this.ensureBankNameIsAvailable(userId, name);
 
     const bank = await this.bankRepository.update(bankId, name);
-    logger.info({
+    this.logger.info({
       userId: bank.userId,
       bankId: bank.id,
       name: bank.name,
     }, "Bank updated");
+
+    return bank;
   }
 
   async delete(userId: string, bankId: string) {
-    logger.info({
+    this.logger.info({
       userId: userId,
       bankId: bankId,
     }, "Delete bank");
@@ -61,19 +65,21 @@ export class BankService {
     await this.getOwnedBank(userId, bankId);
     const bank = await this.bankRepository.delete(bankId);
 
-    logger.info({
+    this.logger.info({
       userId: bank.userId,
       bankId: bank.id,
       name: bank.name,
     }, "Bank deleted");
+
+    return bank;
   }
 
 
-  private async ensureBankNameIsAvailable(userId: string, name: string, excluededBankId?: string) {
+  private async ensureBankNameIsAvailable(userId: string, name: string) {
     const existing = await this.bankRepository.findByName(userId, name);
 
     if (existing) {
-      logger.warn({
+      this.logger.warn({
         userId: existing.userId,
         bankId: existing.id,
         name: existing.name,
@@ -85,7 +91,7 @@ export class BankService {
 
   private ensureUserOwnsBank(bank: Bank, userId: string) {
     if (bank.userId !== userId) {
-      logger.warn({
+      this.logger.warn({
         userId: userId,
         ownerUserId: bank.userId,
         bankId: bank.id,

@@ -1,10 +1,10 @@
 import { prisma } from "../core/database/prisma";
-import { logger } from "../core/logger/logger";
 
 import { PasswordService } from "../services/passwordService";
 import { TokenService } from "../services/tokenService";
 
 import { config } from "./config";
+import { logger } from "./logger/logger";
 
 const passwordService = new PasswordService();
 
