@@ -58,6 +58,16 @@ describe("BankService", () => {
         updatedAt: date,
         userId: "user-id",
       });
+
+      expect(logger.info).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("Creating"),
+      )
+
+      expect(logger.info).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("created"),
+      )
     });
 
     test("should throw ConflictError when bank name already exists", async () => {
@@ -77,6 +87,11 @@ describe("BankService", () => {
           "Revolut",
         ),
       ).rejects.toThrow(ConflictError);
+
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("already exist"),
+      );
 
       expect(repository.create).not.toHaveBeenCalled();
 
@@ -177,6 +192,11 @@ describe("BankService", () => {
         updatedAt: date,
         userId: "user-id",
       });
+
+      expect(logger.info).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("get"),
+      );
     });
 
     test("should throw NotFoundError when bankId doesn't exist", async () => {
@@ -190,6 +210,11 @@ describe("BankService", () => {
           "Revolut",
         ),
       ).rejects.toThrow(NotFoundError);
+
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("not found"),
+      );
     });
 
     test("should throw ForbiddenError when owner is another user", async () => {
@@ -209,6 +234,11 @@ describe("BankService", () => {
           "bank-id",
         ),
       ).rejects.toThrow(ForbiddenError);
+
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("forbidden"),
+      );
     });
   });
 
@@ -265,6 +295,16 @@ describe("BankService", () => {
         updatedAt: date,
         userId: "user-id",
       });
+
+      expect(logger.info).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("Updating"),
+      );
+
+      expect(logger.info).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("updated"),
+      );
     });
 
     test("should throw ConflictError when bank name already exists", async () => {
@@ -295,6 +335,11 @@ describe("BankService", () => {
       ).rejects.toThrow(ConflictError);
 
       expect(repository.update).not.toHaveBeenCalled();
+
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("already exists"),
+      );
     });
 
     test("should throw ForbiddenError when owner is another user", async () => {
@@ -317,6 +362,11 @@ describe("BankService", () => {
       ).rejects.toThrow(ForbiddenError);
 
       expect(repository.update).not.toHaveBeenCalled();
+
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("forbidden"),
+      );
     });
 
     test("should throw NotFoundError when bankId doesn't exist", async () => {
@@ -333,6 +383,11 @@ describe("BankService", () => {
       ).rejects.toThrow(NotFoundError);
 
       expect(repository.update).not.toHaveBeenCalled();
+
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("not found"),
+      );
     });
 
     test("should update bank with unchanged name", async () => {
@@ -393,6 +448,16 @@ describe("BankService", () => {
         updatedAt: date,
         userId: "user-id",
       });
+
+      expect(logger.info).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("Updating"),
+      );
+
+      expect(logger.info).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("updated"),
+      );
     });
   });
 
@@ -440,6 +505,16 @@ describe("BankService", () => {
         updatedAt: date,
         userId: "user-id",
       });
+
+      expect(logger.info).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("Delete"),
+      );
+
+      expect(logger.info).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("deleted"),
+      );
     });
 
     test("should throw NotFoundError when bankId doesn't exist", async () => {
@@ -455,6 +530,11 @@ describe("BankService", () => {
       ).rejects.toThrow(NotFoundError);
 
       expect(repository.delete).not.toHaveBeenCalled();
+
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("not found"),
+      );
     });
 
     test("should throw ForbiddenError when owner is another user", async () => {
@@ -476,6 +556,11 @@ describe("BankService", () => {
       ).rejects.toThrow(ForbiddenError);
 
       expect(repository.delete).not.toHaveBeenCalled();
+
+      expect(logger.warn).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.stringContaining("forbidden"),
+      );
     });
   });
 });
