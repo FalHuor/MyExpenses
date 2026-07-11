@@ -1,10 +1,10 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 import type { BankCreateDto, BankParamsDto, BankUpdateDto } from "./bank.schemas";
-import { BankService } from "./bank.service";
+import { type BankServiceContract } from "./bank.service";
 
 
 export class BankController {
-  constructor(private bankService: BankService) {}
+  constructor(private bankService: BankServiceContract) {}
 
   create = async (
     request: FastifyRequest,

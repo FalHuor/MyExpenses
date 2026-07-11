@@ -1,10 +1,10 @@
-import { expect, test, describe, beforeEach, afterEach } from "vitest";
-import { BankService } from "../../modules/bank/bank.service";
+import { expect, test, describe, beforeEach } from "vitest";
+import { BankService } from "../../../modules/bank/bank.service";
 import { bankRepositoryMock } from "./helpers";
-import { createLoggerMock } from "../helpers/logger";
-import { ConflictError } from "../../core/errors/conflictError";
-import { NotFoundError } from "../../core/errors/notFoundError";
-import { ForbiddenError } from "../../core/errors/forbiddenError";
+import { createLoggerMock } from "../../helpers/logger";
+import { ConflictError } from "../../../core/errors/conflictError";
+import { NotFoundError } from "../../../core/errors/notFoundError";
+import { ForbiddenError } from "../../../core/errors/forbiddenError";
 
 let repository: ReturnType<typeof bankRepositoryMock>;
 let logger: ReturnType<typeof createLoggerMock>;

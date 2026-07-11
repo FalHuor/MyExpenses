@@ -1,15 +1,15 @@
 import * as z from "zod"; 
 
 export const CreateBankSchema = z.object({
-  name: z.string().trim(),
+  name: z.string().trim().min(1).max(100),
 });
 
 export const UpdateBankSchema = z.object({
-  name: z.string().trim(),
+  name: z.string().trim().min(1).max(100),
 });
 
 export const BankParamsSchema = z.object({
-  bankId: z.string(),
+  bankId: z.uuid(),
 });
 
 export type BankCreateDto = z.infer<typeof CreateBankSchema>;
