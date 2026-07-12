@@ -1,9 +1,8 @@
-import { vi, expect, test, describe, beforeEach } from "vitest";
+import { expect, test, describe, beforeEach } from "vitest";
 import { bankServiceMock } from "./helpers";
 import { BankController } from "../../../modules/bank/bank.controller";
-import { createBankBody, createUser, paramsBankBody } from "../../helpers/bank";
-import { createRequest, createReply } from "../../helpers/fastify";
-import type { Param } from "@prisma/client/runtime/client";
+import { createBankBody, createUser, paramsBankBody } from "../helpers/bank";
+import { createRequest, createReply } from "../helpers/fastify";
 
 let service: ReturnType<typeof bankServiceMock>
 let controller: BankController

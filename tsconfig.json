@@ -44,7 +44,5 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
   },
-  "include": [
-    "src"
-  ]
+  "include": [ "src", "tests/integration", "vitest.config.ts", "tests/unit"  ]
 }

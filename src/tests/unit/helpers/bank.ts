@@ -1,4 +1,4 @@
-import type { BankCreateDto, BankParamsDto, BankUpdateDto } from "../../modules/bank/bank.schemas";
+import type { BankCreateDto, BankParamsDto, BankUpdateDto } from "../../../modules/bank/bank.schemas";
 
 export function createBankBody(overrides: Partial<BankCreateDto> = {}): BankCreateDto {
   return {
