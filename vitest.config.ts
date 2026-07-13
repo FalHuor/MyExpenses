@@ -15,7 +15,8 @@ export default defineConfig({
           ],
           globalSetup: [
             "./src/tests/integration/globalSetup.ts",
-          ]
+          ],
+          fileParallelism: false,
         },
       }, {
         test: {

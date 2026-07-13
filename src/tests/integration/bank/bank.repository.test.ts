@@ -10,7 +10,7 @@ beforeEach(async () => {
     await testDependencies.prisma.user.deleteMany();
 });
 
-describe("PrismaBankRepository", () => {
+describe("BankRepository", () => {
 
   test("should persist bank into database", async () => {
     // Arrange
