@@ -2,7 +2,7 @@ import { vi, type Mocked } from "vitest";
 import type { BankRepository } from "../../../modules/bank/bank.repository";
 import type { BankServiceContract  } from "../../../modules/bank/bank.service";
 
-export function bankRepositoryMock(): Mocked<BankRepository> {
+export function BankRepositoryMock(): Mocked<BankRepository> {
   return {
     create: vi.fn(),
     update: vi.fn(),
@@ -13,7 +13,7 @@ export function bankRepositoryMock(): Mocked<BankRepository> {
   };
 }
 
-export function bankServiceMock(): Mocked<BankServiceContract > {
+export function BankServiceMock(): Mocked<BankServiceContract > {
   return {
     create: vi.fn(),
     update: vi.fn(),

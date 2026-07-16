@@ -1,5 +1,5 @@
 import { expect, test, describe, beforeEach } from "vitest";
-import { authRepositoryMock } from "./auth.helpers";
+import { AuthRepositoryMock } from "./auth.helpers";
 import { AuthService } from "../../../modules/auth/auth.service";
 import { createTokenServiceMock } from "../helpers/tokenService";
 import { createPasswordServiceMock } from "../helpers/passwordService";
@@ -7,7 +7,7 @@ import { createLoggerMock } from "../helpers/logger";
 import { ConflictError } from "../../../core/errors/conflictError";
 import { InvalidCredentialsError } from "../../../core/errors/invalidCredentialsError";
 
-let repository: ReturnType<typeof authRepositoryMock>;
+let repository: ReturnType<typeof AuthRepositoryMock>;
 let service: AuthService;
 let tokenService: ReturnType<typeof createTokenServiceMock>;
 let passwordService: ReturnType<typeof createPasswordServiceMock>;
@@ -16,7 +16,7 @@ const date = new Date();
 
 describe("AuthService", () => {
   beforeEach(() => {
-    repository = authRepositoryMock();
+    repository = AuthRepositoryMock();
     tokenService = createTokenServiceMock();
     passwordService = createPasswordServiceMock();
     logger = createLoggerMock();

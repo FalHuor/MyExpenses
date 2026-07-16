@@ -1,17 +1,17 @@
 import { expect, test, describe, beforeEach } from "vitest";
-import { bankServiceMock } from "./bank.helpers";
+import { BankServiceMock } from "./bank.helpers";
 import { BankController } from "../../../modules/bank/bank.controller";
 import { createBankBody, createUser, paramsBankBody } from "../helpers/bank";
 import { createRequest, createReply } from "../helpers/fastify";
 
-let service: ReturnType<typeof bankServiceMock>
+let service: ReturnType<typeof BankServiceMock>
 let controller: BankController
 const date = new Date();
 
 describe("BankController", () => {
 
   beforeEach(() => {
-    service = bankServiceMock();
+    service = BankServiceMock();
     controller = new BankController(service);
   });
 

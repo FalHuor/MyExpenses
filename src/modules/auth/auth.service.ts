@@ -8,6 +8,11 @@ import { ErrorCodes } from "../../core/errors/errorCodes";
 import type { AppLogger } from "../../core/logger/logger.types";
 import type { AuthRepository } from "./auth.repository";
 
+export type AuthServiceContract = Pick<
+  AuthService,
+  "register" | "login" | "me"
+>;
+
 export class AuthService {
 
   constructor(

@@ -1,10 +1,10 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
 
 import type { LoginDto, RegisterDto } from "./auth.schemas";
-import { AuthService } from "./auth.service";
+import type { AuthServiceContract } from "./auth.service";
 
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthServiceContract) {}
 
   register = async (
     request: FastifyRequest<{ Body: RegisterDto }>,
