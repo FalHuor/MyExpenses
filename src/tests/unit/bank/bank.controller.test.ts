@@ -1,5 +1,5 @@
 import { expect, test, describe, beforeEach } from "vitest";
-import { bankServiceMock } from "./helpers";
+import { bankServiceMock } from "./bank.helpers";
 import { BankController } from "../../../modules/bank/bank.controller";
 import { createBankBody, createUser, paramsBankBody } from "../helpers/bank";
 import { createRequest, createReply } from "../helpers/fastify";

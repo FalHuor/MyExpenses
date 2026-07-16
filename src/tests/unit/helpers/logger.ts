@@ -1,5 +1,5 @@
 import { vi } from "vitest";
-import type { AppLogger } from "../../core/logger/logger.types";
+import type { AppLogger } from "../../../core/logger/logger.types";
 
 export function createLoggerMock(): AppLogger {
   return {

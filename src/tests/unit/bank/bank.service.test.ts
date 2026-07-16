@@ -1,6 +1,6 @@
 import { expect, test, describe, beforeEach } from "vitest";
 import { BankService } from "../../../modules/bank/bank.service";
-import { bankRepositoryMock } from "./helpers";
+import { bankRepositoryMock } from "./bank.helpers";
 import { createLoggerMock } from "../helpers/logger";
 import { ConflictError } from "../../../core/errors/conflictError";
 import { NotFoundError } from "../../../core/errors/notFoundError";

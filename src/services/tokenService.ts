@@ -3,7 +3,7 @@ import type { JwtPayload } from "../types/jwt";
 import { InvalidTokenError } from "../core/errors/invalidTokenError";
 import jwt from "jsonwebtoken";
 
-export class TokenService {
+export class TokenService implements ITokenService {
   constructor (
     private config: TokenServiceConfig
   ){}
@@ -14,7 +14,7 @@ export class TokenService {
     });
   }
 
-  verifyAccessToken (token: string): JwtPayload {
+  verifyAccessToken(token: string): JwtPayload {
     try {
       const payload = jwt.verify(token, this.config.secret); 
 
@@ -25,4 +25,9 @@ export class TokenService {
     }
 
   }
+}
+
+export interface ITokenService {
+  signAccessToken(payload: JwtPayload): string;
+  verifyAccessToken(token: string): JwtPayload;
 }

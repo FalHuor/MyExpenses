@@ -8,7 +8,6 @@ export function createAuthModule(dependencies: Dependencies) {
 
     const authRepository = new PrismaAuthRepository(dependencies.prisma);
     const authService = new AuthService(
-        dependencies.prisma,
         authRepository,
         dependencies.tokenService,
         dependencies.passwordService,

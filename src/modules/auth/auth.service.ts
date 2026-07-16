@@ -1,8 +1,7 @@
-import { PrismaClient } from "../../../generated/prisma/client";
 import { } from "../../services/tokenService";
 import type { RegisterDto, LoginDto } from "./auth.schemas"
-import { TokenService } from "../../services/tokenService"
-import { PasswordService } from "../../services/passwordService"; 
+import type { ITokenService } from "../../services/tokenService"
+import type { IPasswordService } from "../../services/passwordService"; 
 import { InvalidCredentialsError } from "../../core/errors/invalidCredentialsError";
 import { ConflictError } from "../../core/errors/conflictError";
 import { ErrorCodes } from "../../core/errors/errorCodes";
@@ -12,10 +11,9 @@ import type { AuthRepository } from "./auth.repository";
 export class AuthService {
 
   constructor(
-    private prisma: PrismaClient,
     private authRepository: AuthRepository,
-    private tokenService: TokenService,
-    private passwordService: PasswordService,
+    private tokenService: ITokenService,
+    private passwordService: IPasswordService,
     private logger: AppLogger
   ) {}
 
@@ -46,7 +44,7 @@ export class AuthService {
     this.logger.info({
       userId: user.id,
       email: user.email
-    }, "User registerd")
+    }, "User registered")
 
     return user;
   }

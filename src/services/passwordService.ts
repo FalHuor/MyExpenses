@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-export class PasswordService {
+export class PasswordService implements IPasswordService {
   constructor(private readonly rounds = 12) {}
 
   async hash(password: string): Promise<string> {
@@ -10,4 +10,9 @@ export class PasswordService {
   async verify(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
   }
+}
+
+export interface IPasswordService {
+  hash(password: string): Promise<string>;
+  verify(password: string, hash: string): Promise<boolean>;
 }
