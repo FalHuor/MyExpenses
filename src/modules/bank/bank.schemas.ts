@@ -14,4 +14,4 @@ export const BankParamsSchema = z.object({
 
 export type BankCreateDto = z.infer<typeof CreateBankSchema>;
 export type BankUpdateDto = z.infer<typeof UpdateBankSchema>;
-export type BankParamsDto  = z.infer<typeof BankParamsSchema>;
+export type BankParamsDto = z.infer<typeof BankParamsSchema>;

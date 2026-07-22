@@ -3,9 +3,10 @@ import { test, describe, beforeEach, expect } from "vitest";
 import { PrismaAuthRepository } from "../../../modules/auth/auth.repository";
 import { createUser } from "../helpers/factory/user.factory";
 import { testDependencies } from "../helpers/dependecies";
+import { cleanDatabase } from "../helpers/database";
 
 beforeEach(async () => {
-  await testDependencies.prisma.user.deleteMany();
+  await cleanDatabase();
 });
 
 describe("AuthRepository", () => {

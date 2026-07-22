@@ -1,4 +1,5 @@
 import type { PrismaClient } from "../../../../../generated/prisma/client";
+import { passwordService } from "../../../../app";
 
 export async function createUser(
   prisma: PrismaClient,
@@ -8,11 +9,16 @@ export async function createUser(
     password?: string;
   },
 ) {
-  return prisma.user.create({
+  let password = "hashed-password"
+  if (overrides?.password) {
+    password = await passwordService.hash(overrides.password);
+  }
+
+  return await prisma.user.create({
     data: {
       email: overrides?.email ?? "john.doe@test.fr",
       username: overrides?.username ?? "johnDoe",
-      password: overrides?.password ?? "hashed-password",
+      password: password,
     },
   });
 }

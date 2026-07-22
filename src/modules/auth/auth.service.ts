@@ -55,6 +55,7 @@ export class AuthService {
   }
 
   async login(dto: LoginDto) {
+
     const user = await this.authRepository.findByLogin(dto.login);
 
     if (!user) {

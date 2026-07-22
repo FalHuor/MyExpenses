@@ -4,10 +4,10 @@ import { PrismaBankRepository } from "../../../modules/bank/bank.repository";
 
 import { createUser } from "../helpers/factory/user.factory";
 import { testDependencies } from "../helpers/dependecies";
+import { cleanDatabase } from "../helpers/database";
 
 beforeEach(async () => {
-    await testDependencies.prisma.bank.deleteMany();
-    await testDependencies.prisma.user.deleteMany();
+    await cleanDatabase();
 });
 
 describe("BankRepository", () => {
