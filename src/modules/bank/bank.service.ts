@@ -6,6 +6,11 @@ import { ForbiddenError } from "../../core/errors/forbiddenError";
 import type { Bank } from "../../../generated/prisma/client";
 import type { AppLogger } from "../../core/logger/logger.types";
 
+export type BankServiceContract = Pick<
+  BankService,
+  "create" | "update" | "getAll" | "getById" | "delete"
+>;
+
 export class BankService {
   constructor (
     private bankRepository: BankRepository, 

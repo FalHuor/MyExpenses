@@ -10,11 +10,11 @@ const passwordService = new PasswordService();
 
 const tokenService = new TokenService(config.jwt);
 
-export const dependencies = {
+export const defaultDependencies = {
   prisma,
   logger,
   passwordService,
   tokenService,
 };
 
-export type Dependencies = typeof dependencies;
+export type Dependencies = typeof defaultDependencies;

@@ -1,14 +1,13 @@
 import Fastify from "fastify";
 import "dotenv/config";
-
 import { errorHandler } from "./core/errors/errorHandler";
-import prismaPlugin from "./plugins/prisma.js";
 import swaggerPlugin from "./plugins/swagger.js";
 import { TokenService } from "./services/tokenService.js";
 import { PasswordService } from "./services/passwordService.js";
+import { createPrismaPlugin } from "./plugins/prisma";
 import { createAuthPlugin } from "./plugins/auth.js";
 import { config } from "./core/config/index.js";
-import { dependencies } from "./core/dependencies.js";
+import { defaultDependencies, type Dependencies } from "./core/dependencies.js";
 import { createAuthModule } from "./modules/auth/index.js";
 import { createBankModule } from "./modules/bank";
 
@@ -16,7 +15,7 @@ export const tokenService = new TokenService(config.jwt);
 
 export const passwordService = new PasswordService();
 
-export async function buildApp() {
+export async function buildApp(dependencies: Dependencies = defaultDependencies) {
   const app = Fastify({
     logger: true,
   });
@@ -27,9 +26,9 @@ export async function buildApp() {
   app.setErrorHandler(errorHandler);
 
   // Plugins
-  await app.register(prismaPlugin);
+  // await app.register(createPrismaPlugin(dependencies.prisma));
   await app.register(swaggerPlugin);
-  await app.register(createAuthPlugin(tokenService))
+  await app.register(createAuthPlugin(dependencies.tokenService))
 
   // Routes
   app.get("/health", async () => {

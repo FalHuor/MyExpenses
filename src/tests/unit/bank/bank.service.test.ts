@@ -1,12 +1,12 @@
-import { expect, test, describe, beforeEach, afterEach } from "vitest";
-import { BankService } from "../../modules/bank/bank.service";
-import { bankRepositoryMock } from "./helpers";
+import { expect, test, describe, beforeEach } from "vitest";
+import { BankService } from "../../../modules/bank/bank.service";
+import { BankRepositoryMock } from "./bank.helpers";
 import { createLoggerMock } from "../helpers/logger";
-import { ConflictError } from "../../core/errors/conflictError";
-import { NotFoundError } from "../../core/errors/notFoundError";
-import { ForbiddenError } from "../../core/errors/forbiddenError";
+import { ConflictError } from "../../../core/errors/conflictError";
+import { NotFoundError } from "../../../core/errors/notFoundError";
+import { ForbiddenError } from "../../../core/errors/forbiddenError";
 
-let repository: ReturnType<typeof bankRepositoryMock>;
+let repository: ReturnType<typeof BankRepositoryMock>;
 let logger: ReturnType<typeof createLoggerMock>;
 let service: BankService;
 const date = new Date();
@@ -14,7 +14,7 @@ const date = new Date();
 describe("BankService", () => {
 
   beforeEach(() => {
-    repository = bankRepositoryMock();
+    repository = BankRepositoryMock();
     logger = createLoggerMock();
     service = new BankService(repository, logger);
   })
